@@ -4,28 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>¿Vamos a jugar?</title>
-
-  <!-- Fuente tipo gamer -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-
   <style>
-    body {
-      font-family: 'Orbitron', sans-serif;
+    html, body {
       margin: 0;
       padding: 0;
+      overflow: hidden;
+      height: 100vh;
+      background-color: #1a1a1a;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .contenido {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      transition: background-color 0.5s ease;
-      background-color: #2c2c2c;
-      color: white;
+      height: 100%;
+      text-align: center;
+      padding: 20px;
     }
 
     h1 {
       font-size: 2.5rem;
       margin-bottom: 20px;
+      text-shadow: 1px 1px 4px black;
     }
 
     .button-container {
@@ -33,6 +44,7 @@
       flex-wrap: wrap;
       gap: 15px;
       justify-content: center;
+      margin-bottom: 20px;
     }
 
     button {
@@ -70,32 +82,68 @@
     }
 
     #mensaje {
-      margin-top: 30px;
-      font-size: 1.3rem;
+      margin-top: 20px;
+      font-size: 1.2rem;
       color: #d1fae5;
+    }
+
+    #btn-volver {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #374151;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      display: none;
+      z-index: 10;
+    }
+
+    #btn-volver:hover {
+      background-color: #1f2937;
+    }
+
+    #imagen-juego {
+      margin-top: 20px;
+      max-width: 480px;
+      height: 270px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
     }
   </style>
 </head>
 <body>
-  <div id="pantalla-nombre">
-    <h1>¿Quién eres?</h1>
-    <div class="button-container">
-      <button class="nombre" onclick="seleccionarNombre('Anderson')">Anderson</button>
-      <button class="nombre" onclick="seleccionarNombre('Andres')">Andres</button>
-      <button class="nombre" onclick="seleccionarNombre('Efrain')">Efrain</button>
-      <button class="nombre" onclick="seleccionarNombre('Machero')">Machero</button>
+  <div id="particles-js"></div>
+
+  <button id="btn-volver" onclick="volverNombre()">Volver</button>
+
+  <div class="contenido">
+    <div id="pantalla-nombre">
+      <h1>¿Quién eres?</h1>
+      <div class="button-container">
+        <button class="nombre" onclick="seleccionarNombre('Anderson')">Anderson</button>
+        <button class="nombre" onclick="seleccionarNombre('Andres')">Andres</button>
+        <button class="nombre" onclick="seleccionarNombre('Efrain')">Efrain</button>
+        <button class="nombre" onclick="seleccionarNombre('Machero')">Machero</button>
+      </div>
+    </div>
+
+    <div id="pantalla-juego" class="hidden">
+      <h1 id="titulo-juego">¿Vamos a jugar ya?</h1>
+      <div class="button-container">
+        <button class="rocket" onclick="elegirJuego('Rocket League')">🚗 Rocket League</button>
+        <button class="valorant" onclick="elegirJuego('Valorant')">🎯 Valorant</button>
+      </div>
+      <div id="mensaje"></div>
+      <img id="imagen-juego" class="hidden" />
     </div>
   </div>
 
-  <div id="pantalla-juego" class="hidden">
-    <h1 id="titulo-juego">¿Vamos a jugar ya?</h1>
-    <div class="button-container">
-      <button class="rocket" onclick="elegirJuego('Rocket League')">🚗 Rocket League</button>
-      <button class="valorant" onclick="elegirJuego('Valorant')">🎯 Valorant</button>
-    </div>
-    <div id="mensaje"></div>
-  </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
     let nombreSeleccionado = "";
 
@@ -104,18 +152,83 @@
       document.getElementById("pantalla-nombre").classList.add("hidden");
       document.getElementById("pantalla-juego").classList.remove("hidden");
       document.getElementById("titulo-juego").textContent = `¿Vamos a jugar ya, ${nombre}?`;
+      document.getElementById("btn-volver").style.display = "block";
     }
 
     function elegirJuego(juego) {
-      let mensaje = `¡Genial ${nombreSeleccionado}! Vamos a jugar ${juego}. 🎮`;
-      document.getElementById("mensaje").textContent = mensaje;
+      const mensaje = `¡Genial ${nombreSeleccionado}! Vamos a jugar ${juego}. 🎮`;
+      const mensajeEl = document.getElementById("mensaje");
+      const imagenEl = document.getElementById("imagen-juego");
+
+      mensajeEl.textContent = mensaje;
 
       if (juego === "Rocket League") {
-        document.body.style.backgroundColor = "#ff7f11"; // naranja
+        changeParticleColor("#f97316");
+        imagenEl.src = "https://cdn1.epicgames.com/offer/9773aa1aa54f4f7b80e44bef04986cea/EGS_RocketLeague_PsyonixLLC_S3_2560x1440-18eac9b5df1028fdcd5bad480ab6b085";
       } else if (juego === "Valorant") {
-        document.body.style.backgroundColor = "#b91c1c"; // rojo oscuro
+        changeParticleColor("#e11d48");
+        imagenEl.src = "https://cdn1.epicgames.com/offer/cbd5b3d310a54b12bf3fe8c41994174f/EGS_VALORANT_RiotGames_S1_2560x1440-7d279548324d3a3cbef40e1dc7e84994?resize=1&w=480&h=270&quality=medium";
+      }
+
+      imagenEl.classList.remove("hidden");
+    }
+
+    function volverNombre() {
+      document.getElementById("pantalla-juego").classList.add("hidden");
+      document.getElementById("pantalla-nombre").classList.remove("hidden");
+      document.getElementById("btn-volver").style.display = "none";
+      document.getElementById("mensaje").textContent = "";
+      document.getElementById("imagen-juego").classList.add("hidden");
+      nombreSeleccionado = "";
+      changeParticleColor("#ffffff");
+    }
+
+    function changeParticleColor(color) {
+      if (window.pJSDom && pJSDom[0]) {
+        pJSDom[0].pJS.particles.color.value = color;
+        pJSDom[0].pJS.particles.line_linked.color = color;
+        pJSDom[0].pJS.fn.particlesRefresh();
       }
     }
+
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80 },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: {
+          value: 0.6,
+          random: true
+        },
+        size: {
+          value: 2,
+          random: true
+        },
+        line_linked: {
+          enable: true,
+          distance: 120,
+          color: "#ffffff",
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 1.5
+        }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" }
+        },
+        modes: {
+          repulse: { distance: 80 },
+          push: { particles_nb: 4 }
+        }
+      },
+      retina_detect: true
+    });
   </script>
 </body>
 </html>
